@@ -1,3 +1,3 @@
-export const DB_NAME="healthcare";
+export const DB_NAME="FastBus";
 
 export default DB_NAME;
