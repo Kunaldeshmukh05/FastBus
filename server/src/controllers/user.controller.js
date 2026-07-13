@@ -1,7 +1,9 @@
 import { User } from "../models/user.models.js";
-import { hashPassword } from "../utils/bcrypt.utils.js";
+import { hashPassword, comparePassword } from "../utils/bcrypt.utils.js";
 import { generateAccessToken, generateRefreshToken } from "../auth/jwt.auth.js";
 
+
+//register user
 const registerUser = async (req, res) => {
     try {
         const {
@@ -81,4 +83,82 @@ const registerUser = async (req, res) => {
     }
 };
 
-export { registerUser };
+
+//login user
+const loginUser = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        // Validate input
+        if (!email || !password) {
+            return res.status(400).json({
+                success: false,
+                message: "Please provide email and password"
+            });
+        }
+
+        // ✅ FIX: Select password explicitly (it might be excluded by default)
+        const user = await User.findOne({ email }).select('+password');
+        
+        if (!user) {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid credentials"
+            });
+        }
+
+        // ✅ DEBUG: Check if user and password exist
+        console.log('User found:', user.email);
+        console.log('Has password?', !!user.password);
+
+        // ✅ Verify password
+        const isPasswordValid = await comparePassword(password, user.password);
+        
+        if (!isPasswordValid) {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid credentials"
+            });
+        }
+
+        // Generate tokens
+        const accessToken = generateAccessToken({
+            userId: user._id,
+            username: user.username,
+            email: user.email,
+            role: user.userRole
+        });
+
+        const refreshToken = generateRefreshToken({
+            userId: user._id
+        });
+
+        // Set refresh token as HTTP-only cookie
+        res.cookie('refreshToken', refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+        });
+
+        // Remove password from response
+        const userResponse = user.toObject();
+        delete userResponse.password;
+
+        return res.status(200).json({
+            success: true,
+            message: "Login successful",
+            accessToken,
+            user: userResponse
+        });
+
+    } catch (error) {
+        console.error('Login error:', error);
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+export { registerUser, loginUser };
