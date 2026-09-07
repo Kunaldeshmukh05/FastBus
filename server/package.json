@@ -1,25 +1,32 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
+  "description": "FastBus backend server",
+  "keywords": [
+    "npm"
+  ],
+  "homepage": "https://github.com/Kunaldeshmukh05/FastBus#readme",
+  "bugs": {
+    "url": "https://github.com/Kunaldeshmukh05/FastBus/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kunaldeshmukh05/FastBus.git"
+  },
+  "license": "MIT",
+  "author": "Kunal Deshmukh",
   "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "test": "npm test",
+    "start": "node server.js",
+    "dev" :"nodemon server.js"
+  },
   "dependencies": {
     "bcrypt": "^6.0.0",
-    "cookie-parser": "^1.4.7",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
-    "mongoose": "^8.24.0",
-    "nodemon": "^3.1.14",
-    "prettier": "^3.6.2"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js",
-    "dev": "nodemon node server.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+    "nodemon": "^3.1.14"
+  }
 }

@@ -1,0 +1,4 @@
+1. Please ignore this file and models along with they are designed for the multipurpose and better understanding of the entities.
+
+2.Don't follow it or use they are meant to be NOSQL
+
